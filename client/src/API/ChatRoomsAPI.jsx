@@ -16,4 +16,5 @@ const ChatRoomsAPI = {
     return axiosClient.put(url, body);
   },
 };
+
 export default ChatRoomsAPI;

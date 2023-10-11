@@ -33,7 +33,7 @@ export const validateSignUp = [
       return User.findOne({
         email: value,
       }).then((user) => {
-        if (!user) {
+        if (user) {
           return Promise.reject(
             "Email exists already, please pick a different one"
           );

@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
-import { deleteSession } from '../Redux/Action/ActionSession';
+import { Link } from "react-router-dom";
 
 function LoginLink(props) {
-	const dispatch = useDispatch();
+  const onLogout = () => {
+    window.location.href = "/signin";
+    localStorage.clear();
+  };
 
-	const onRedirect = () => {
-		localStorage.clear();
-
-		const action = deleteSession('');
-		dispatch(action);
-	};
-
-	return (
-		<li className='nav-item' onClick={onRedirect}>
-			<Link className='nav-link' to='/signin'>
-				( Logout )
-			</Link>
-		</li>
-	);
+  return (
+    <li className="nav-item" onClick={onLogout}>
+      <Link className="nav-link" to="">
+        ( Logout )
+      </Link>
+    </li>
+  );
 }
 
 export default LoginLink;

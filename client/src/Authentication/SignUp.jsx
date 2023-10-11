@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import UserAPI from "../API/UserAPI";
-import "./Auth.css";
-
 import { toast } from "react-toastify";
+
+import "./Auth.css";
 import Loading from "../Loading/Loading";
-import queryString from "query-string";
-import MessengerAPI from "../API/MessengerAPI";
 
 SignUp.propTypes = {};
 
@@ -99,38 +97,21 @@ function SignUp(props) {
               setPhoneError(true);
               setPasswordError(false);
             } else {
-              console.log("Thanh Cong");
-
               const fetchSignUp = async () => {
                 const newUser = {
-                  fullname: fullname,
+                  fullName: fullname,
                   email: email,
                   password: password,
                   phone: phone,
                 };
 
                 await UserAPI.postSignUp(newUser);
-                toast.success("Register Success");
 
+                toast.success("Register Success !");
                 setSuccess(true);
               };
 
               fetchSignUp();
-
-              // Hàm này dùng để tạo các conversation cho user và admin
-              // const fetchConversation = async () => {
-              //   const params = {
-              //     email: email,
-              //     password: password,
-              //   };
-
-              //   const query = "?" + queryString.stringify(params);
-
-              //   const response = await MessengerAPI.postConversation(query);
-              //   console.log(response);
-              // };
-
-              // fetchConversation();
             }
           }
         }
@@ -150,93 +131,105 @@ function SignUp(props) {
       setLoading(false);
     }, 1500);
   }, []);
+
   if (success) {
     return <Redirect to={"/signin"} />;
   }
 
   return (
-    <div className="limiter">
-      <div className="container-login100">
-        <div className="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-50">
-          <span className="login100-form-title p-b-33">Sign Up</span>
-          <div className="d-flex justify-content-center pb-5">
-            {errorFullname && (
-              <span className="text-danger">
-                * Please Check Your Full Name!
-              </span>
-            )}
-            {errorEmail && (
-              <span className="text-danger">* Please Check Your Email!</span>
-            )}
-            {emailRegex && (
-              <span className="text-danger">* Incorrect Email Format</span>
-            )}
-            {errorPassword && (
-              <span className="text-danger">* Please Check Your Password!</span>
-            )}
-            {errorPhone && (
-              <span className="text-danger">
-                * Please Check Your Phone Number!
-              </span>
-            )}
-          </div>
-          <div className="wrap-input100 validate-input">
-            <input
-              className="input100"
-              value={fullname}
-              onChange={onChangeName}
-              type="text"
-              placeholder="Full Name"
-            />
-          </div>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="limiter">
+          <div className="container-login100">
+            <div className="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-50">
+              <span className="login100-form-title p-b-33">Sign Up</span>
+              <div className="d-flex justify-content-center pb-5">
+                {errorFullname && (
+                  <span className="text-danger">
+                    * Please Check Your Full Name!
+                  </span>
+                )}
+                {errorEmail && (
+                  <span className="text-danger">
+                    * Please Check Your Email!
+                  </span>
+                )}
+                {emailRegex && (
+                  <span className="text-danger">* Incorrect Email Format</span>
+                )}
+                {errorPassword && (
+                  <span className="text-danger">
+                    * Please Check Your Password!
+                  </span>
+                )}
+                {errorPhone && (
+                  <span className="text-danger">
+                    * Please Check Your Phone Number!
+                  </span>
+                )}
+              </div>
+              <form>
+                <div className="wrap-input100 validate-input">
+                  <input
+                    className="input100"
+                    value={fullname}
+                    onChange={onChangeName}
+                    type="text"
+                    placeholder="Full Name"
+                  />
+                </div>
+                <div className="wrap-input100 rs1 validate-input">
+                  <input
+                    className="input100"
+                    value={email}
+                    onChange={onChangeEmail}
+                    type="text"
+                    placeholder="Email"
+                  />
+                </div>
 
-          <div className="wrap-input100 rs1 validate-input">
-            <input
-              className="input100"
-              value={email}
-              onChange={onChangeEmail}
-              type="text"
-              placeholder="Email"
-            />
-          </div>
+                <div className="wrap-input100 rs1 validate-input">
+                  <input
+                    className="input100"
+                    value={password}
+                    onChange={onChangePassword}
+                    type="password"
+                    placeholder="Password"
+                    autoComplete="on"
+                  />
+                </div>
 
-          <div className="wrap-input100 rs1 validate-input">
-            <input
-              className="input100"
-              value={password}
-              onChange={onChangePassword}
-              type="password"
-              placeholder="Password"
-            />
-          </div>
+                <div className="wrap-input100 rs1 validate-input">
+                  <input
+                    className="input100"
+                    value={phone}
+                    onChange={onChangePhone}
+                    type="text"
+                    placeholder="Phone"
+                  />
+                </div>
+              </form>
 
-          <div className="wrap-input100 rs1 validate-input">
-            <input
-              className="input100"
-              value={phone}
-              onChange={onChangePhone}
-              type="text"
-              placeholder="Phone"
-            />
-          </div>
+              <div className="container-login100-form-btn m-t-20">
+                <button className="login100-form-btn" onClick={handlerSignUp}>
+                  Sign Up
+                </button>
+              </div>
 
-          <div className="container-login100-form-btn m-t-20">
-            {success && <Redirect to={"/signin"} />}
-            <button className="login100-form-btn" onClick={handlerSignUp}>
-              Sign Up
-            </button>
-          </div>
-
-          <div className="text-center p-t-45 p-b-4">
-            <span className="txt1">Login?</span>
-            &nbsp;
-            <Link to="/signin" className="txt2 hov1">
-              Click
-            </Link>
+              <div className="text-center p-t-45 p-b-4">
+                <span className="txt1">Login?</span>
+                &nbsp;
+                <Link to="/signin" className="txt2 hov1">
+                  Click
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 

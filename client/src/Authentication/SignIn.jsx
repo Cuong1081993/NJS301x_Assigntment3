@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
-import UserAPI from "../API/UserAPI";
-import { addSession } from "../Redux/Action/ActionSession";
-import "./Auth.css";
-import queryString from "query-string";
-import CartAPI from "../API/CartAPI";
-import Loading from "../Loading/Loading";
 import { toast } from "react-toastify";
+import UserAPI from "../API/UserAPI";
+import Loading from "../Loading/Loading";
+import "./Auth.css";
 
 function SignIn(props) {
   const [err, setErr] = useState("");
@@ -44,7 +40,6 @@ function SignIn(props) {
   if (success) {
     return <Redirect to={`/`} />;
   }
-
   return (
     <>
       {loading ? (

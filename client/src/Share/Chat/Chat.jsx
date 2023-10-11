@@ -3,8 +3,11 @@ import "./Chat.css";
 
 import ChatRoomsAPI from "../../API/ChatRoomsAPI";
 
-import io from "socket.io-client";
-const socket = io("http://54.254.177.24:5000", { transports: ["websocket"] });
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5000", {
+  transports: ["websocket"],
+});
 
 function Chat(props) {
   const [activeChat, setActiveChat] = useState(false);
@@ -12,7 +15,6 @@ function Chat(props) {
   const [message, setMessage] = useState();
   const [roomId, setRoomId] = useState(localStorage.getItem("roomId") || "");
 
-  //Get id_user từ redux khi user đã đăng nhập
   const [load, setLoad] = useState(false);
 
   // Hàm này dùng để mở hộp thoại chat
@@ -27,25 +29,19 @@ function Chat(props) {
     setActiveChat(!activeChat);
   };
 
-  const onChangeText = (e) => {
-    setTextMessage(e.target.value);
-  };
-
   const handlerSend = async () => {
     //Sau đó nó emit dữ liệu lên server bằng socket với key send_message và value data
-    if (textMessage === "") {
-      return;
-    }
+    if (textMessage === "") return;
     if (!roomId) {
-      const newRoomData = await ChatRoomsAPI.createNewRoom();
-      setRoomId(newRoomData._id);
-      localStorage.setItem("roomId", newRoomData._id);
+      const response = await ChatRoomsAPI.createNewRoom();
+      localStorage.setItem("roomId", response);
     }
     const data = {
       message: textMessage,
       roomId: roomId,
       isAdmin: false,
     };
+
     // Check if text equal "/end" then end room
     if (roomId && textMessage.toLowerCase() === "/end") {
       localStorage.removeItem("roomId");
@@ -55,6 +51,7 @@ function Chat(props) {
       setActiveChat(false);
     }
 
+    //Tiếp theo nó sẽ postdata lên api đưa dữ liệu vào database
     await ChatRoomsAPI.addMessage(data);
     setTextMessage("");
 
@@ -64,9 +61,18 @@ function Chat(props) {
     }, 200);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchData = async () => {
     const response = await ChatRoomsAPI.getMessageByRoomId(roomId);
-    setMessage(response.content);
+    if (response.isEnd) {
+      localStorage.removeItem("roomId");
+      setTextMessage("");
+      setRoomId("");
+      setMessage([]);
+      setActiveChat(false);
+    }
+
+    setMessage(response);
   };
 
   // Hàm này dùng để load dữ liệu message của user khi user gửi tin nhán
@@ -75,7 +81,7 @@ function Chat(props) {
       fetchData();
       setLoad(false);
     }
-  }, [load]);
+  }, [fetchData, load]);
 
   useEffect(() => {
     setLoad(true);
@@ -86,7 +92,9 @@ function Chat(props) {
     //Nhận dữ liệu từ server gửi lên thông qua socket với key receive_message
     socket.on("receive_message", (data) => {
       //Sau đó nó sẽ setLoad gọi lại hàm useEffect lấy lại dữ liệu
-      setLoad(true);
+      setTimeout(() => {
+        setLoad(true);
+      }, 100);
     });
   }, []);
 
@@ -130,32 +138,32 @@ function Chat(props) {
                 <h4 className="card-title">
                   <strong>Customer Support</strong>
                 </h4>{" "}
-                <a className="btn btn-xs btn-secondary" href="#">
+                <button className="btn btn-xs btn-secondary">
                   Let's Chat App
-                </a>
+                </button>
               </div>
               <div className="ps-container ps-theme-default ps-active-y fix_scoll">
                 {message &&
-                  message.map((value) =>
-                    !value.is_admin ? (
+                  message.message?.map((value, index) =>
+                    !value.isAdmin ? (
                       <div
                         className="media media-chat media-chat-reverse"
-                        key={value.id}
+                        key={index}
                       >
                         <div className="media-body">
-                          <p>You: {value.message}</p>
+                          <p>{value.message}</p>
                         </div>
                       </div>
                     ) : (
-                      <div className="media media-chat" key={value.id}>
-                        {" "}
+                      <div className="media media-chat" key={index}>
                         <img
                           className="avatar"
                           src="https://img.icons8.com/color/36/000000/administrator-male.png"
                           alt="..."
                         />
+
                         <div className="media-body" key={value.id}>
-                          <p>Cộng tác viên: {value.message}</p>
+                          <p> Cộng tác viên : {value.message}</p>
                         </div>
                       </div>
                     )
@@ -170,7 +178,7 @@ function Chat(props) {
                 <input
                   type="text"
                   placeholder="Enter Message!"
-                  onChange={onChangeText}
+                  onChange={(e) => setTextMessage(e.target.value)}
                   value={textMessage}
                   style={{ width: "80%" }}
                   onKeyPress={(e) => {
@@ -179,13 +187,13 @@ function Chat(props) {
                     }
                   }}
                 />
-                <a
+                <span
                   onClick={handlerSend}
                   className="publisher-btn text-info"
                   data-abc="true"
                 >
                   <i className="fa fa-paper-plane"></i>
-                </a>
+                </span>
               </div>
             </div>
           </div>

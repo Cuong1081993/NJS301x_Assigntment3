@@ -5,7 +5,7 @@ import User from "../models/User.js";
 import { createError } from "../middlewares/error.js";
 
 // create access token
-const generateAccessToekn = (user) => {
+const generateAccessToken = (user) => {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: "1d",
   });
@@ -60,7 +60,7 @@ export const login = async (req, res, next) => {
       return next(createError(400, "Wrong password"));
     }
     const { password, ...otherDetails } = req.user._doc;
-    const accessToken = generateAccessToekn({ ...otherDetails });
+    const accessToken = generateAccessToken({ ...otherDetails });
 
     res.status(200).json({ accessToken, details: { ...otherDetails } });
   } catch (error) {
