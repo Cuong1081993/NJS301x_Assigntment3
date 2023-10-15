@@ -124,7 +124,7 @@ export const createOrder = async (req, res, next) => {
 export const getOrdersUser = async (req, res, next) => {
   try {
     const orders = await Order.find({ userId: req.user._id });
-    if (!orders) return createError(400, `You don't have order!`);
+    if (!orders) return createError(400, `You don't have any order!`);
     res.status(200).json(orders);
   } catch (err) {
     next(err);
@@ -199,6 +199,7 @@ export const getEarningAvg = async (req, res, next) => {
     const average = (totalP / months).toFixed();
     res.status(200).json(average);
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 };

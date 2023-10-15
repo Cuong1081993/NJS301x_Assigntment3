@@ -7,7 +7,7 @@ import "./Checkout.css";
 
 import { io } from "socket.io-client";
 import Loading from "../Loading/Loading";
-const socket = io("https://be-node-fpow.onrender.com", {
+const socket = io("http://localhost:5000", {
   transports: ["websocket"],
 });
 

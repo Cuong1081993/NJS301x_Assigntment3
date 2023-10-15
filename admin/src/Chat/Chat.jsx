@@ -4,7 +4,7 @@ import "./Chat.css";
 import { ThreeDots } from "react-loader-spinner";
 import Footer from "../Footer/Footer";
 import { io } from "socket.io-client";
-const socket = io("https://be-node-fpow.onrender.com", {
+const socket = io("http://localhost:5000", {
   transports: ["websocket"],
 });
 
@@ -155,7 +155,7 @@ function Chat(props) {
                                   <div className="w-75 d-inline-block v-middle pl-2">
                                     <h6 className="message-title mb-0 mt-1">
                                       {/* Client */}
-                                      {value._id}
+                                      {value.userId.fullName}
                                     </h6>
                                     <span className="font-12 text-nowrap d-block text-muted text-truncate">
                                       Online

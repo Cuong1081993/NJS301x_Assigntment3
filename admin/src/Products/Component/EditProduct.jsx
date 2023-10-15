@@ -70,7 +70,7 @@ const EditProduct = () => {
               onSubmit={handleSubmit}
               encType="multipart/form-data"
             >
-              <div class="form-group">
+              <div className="form-group">
                 <label htmlFor="name">Product Name</label>
                 <input
                   type="text"
