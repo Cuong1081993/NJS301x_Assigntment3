@@ -8,7 +8,7 @@ import Name from "../../Authentication/Name";
 function Header() {
   const [active, setActive] = useState("Home");
   const [isLogin, setIsLogin] = useState(false);
-  const [nameUser, setNameUser] = useState();
+  const [nameUser, setNameUser] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
 

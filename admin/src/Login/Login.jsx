@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserAPI from "../API/UserAPI";
-import Footer from "../Footer/Footer";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -73,7 +72,6 @@ const Login = () => {
           <h3 className="p-2 text-danger align-self-center"> {error}</h3>
         )}
       </form>
-      <Footer />
     </div>
   );
 };

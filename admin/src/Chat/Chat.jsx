@@ -4,7 +4,7 @@ import "./Chat.css";
 import { ThreeDots } from "react-loader-spinner";
 import Footer from "../Footer/Footer";
 import { io } from "socket.io-client";
-const socket = io("http://localhost:5000", {
+const socket = io("https://be-node-fpow.onrender.com", {
   transports: ["websocket"],
 });
 
